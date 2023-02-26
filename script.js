@@ -37,6 +37,8 @@ btnSalvar.addEventListener("click", () => {
     // resetando os valores dos inputs
     const form = document.querySelector("#myForm");
     form.reset();
+    renderizaClientesNaTabela();
+
 });
 
 // verificando se há dados salvos no localStorage
