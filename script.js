@@ -1,45 +1,42 @@
+// criando um objeto com os valores dos inputs
+const formData = {nome, email, celular, cidade,};
+
+  // verificando se já existem dados no localStorage
+  const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
 
 // selecionando o elemento tbody da tabela
 const tableBody = document.querySelector("#table-body");
 const btnSalvar = document.querySelector("#btn-salvar");
+const inputCelular = document.querySelector("#input-celular");
 // selecionando o botão "Salvar"
+
+inputCelular.addEventListener("blur", () => {
+    inputCelular.value = formatPhoneNumberWithValidation(inputCelular.value);
+});
 
 // adicionando um ouvinte de eventos ao botão "Salvar"
 btnSalvar.addEventListener("click", () => {
     // selecionando os valores dos inputs
     const nome = document.querySelector("#input-nome").value;
     const email = document.querySelector("#input-email").value;
-    const celular = document.querySelector("#input-celular").value;
+    const celular = formatPhoneNumber(document.querySelector("#input-celular").value);
     const cidade = document.querySelector("#input-cidade").value;
-
-    // criando um objeto com os valores dos inputs
-    const formData = {
-        nome,
-        email,
-        celular,
-        cidade,
-    };
-
-    // verificando se já existem dados no localStorage
-    const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
-
+  
     // adicionando o novo cliente ao array
     clientes.push(formData);
-
-    // salvando os dados dos clientes no localStorage
-    localStorage.setItem("clientes", JSON.stringify(clientes));
 
     // fechando o modal
     const modal = document.querySelector("#myModal");
     const modalBootstrap = bootstrap.Modal.getInstance(modal);
     modalBootstrap.hide();
-
+    
     // resetando os valores dos inputs
     const form = document.querySelector("#myForm");
     form.reset();
+    salvarClientesNoLocalStorage(clientes)
     renderizaClientesNaTabela();
-
-});
+  });
+  
 
 // verificando se há dados salvos no localStorage
 
@@ -119,3 +116,52 @@ function excluirCliente(index) {
     // renderizando novamente a tabela com os clientes atualizados
     renderizaClientesNaTabela();
 }
+
+function formatPhoneNumber(phoneNumberString) {
+    var cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+    var match = cleaned.match(/^(\d{2})(\d{5})(\d{4})$/);
+    if (match) {
+        return '(' + match[1] + ') ' + match[2] + '-' + match[3];
+    }
+    return null;
+}
+function formatPhoneNumberWithValidation(phoneNumber) {
+    const cleaned = phoneNumber.replace(/\D/g, "");
+    
+    if (cleaned.length !== 11 || !/^\d+$/.test(cleaned)) {
+      return null; // número de celular inválido
+    }
+    
+    const match = cleaned.match(/^(\d{2})(\d{5})(\d{4})$/);
+    
+    if (match) {
+      return `(${match[1]}) ${match[2]}-${match[3]}`;
+    }
+    
+    return null; // número de celular inválido
+  }
+  function validateForm() {
+    const nome = document.querySelector("#input-nome").value;
+    const email = document.querySelector("#input-email").value;
+    const celular = document.querySelector("#input-celular").value;
+    const cidade = document.querySelector("#input-cidade").value;
+  
+    if (!nome || !email || !celular || !cidade) {
+      alert("Por favor, preencha todos os campos!");
+      return false;
+    }
+  
+    const formattedCelular = formatPhoneNumberWithValidation(celular);
+  
+    if (!formattedCelular) {
+      alert("Por favor, insira um número de celular válido!");
+      return false;
+    }
+  
+    return true;
+  }
+    
+  function salvarClientesNoLocalStorage(dadosClientes) {
+     // salvando os dados dos clientes no localStorage
+     localStorage.setItem("clientes", JSON.stringify(dadosClientes));
+  }
