@@ -14,7 +14,7 @@ function validarCampos() {
   const email = document.querySelector("#input-email").value;
   const celular = formatPhoneNumber(document.querySelector("#input-celular").value);
   const cidade = document.querySelector("#input-cidade").value;
-  
+
   if (!nome || !email || !celular || !cidade) {
     alert("Por favor, preencha todos os campos.");
     return false;
@@ -32,25 +32,25 @@ function salvarDados() {
   const email = document.querySelector("#input-email").value;
   const celular = formatPhoneNumber(document.querySelector("#input-celular").value);
   const cidade = document.querySelector("#input-cidade").value;
-  
+
   const formData = {
     nome,
     email,
     celular,
     cidade,
   };
-  
+
   const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
-  
+
   clientes.push(formData);
-  
+
   localStorage.setItem("clientes", JSON.stringify(clientes));
-  
+
   const modal = document.querySelector("#myModal");
   const modalBootstrap = bootstrap.Modal.getInstance(modal);
   modalBootstrap._backdrop.remove();
   modalBootstrap.hide();
-  
+
   const form = document.querySelector("#myForm");
   form.reset();
   renderizaClientesNaTabela();
@@ -107,16 +107,78 @@ function renderizaClientesNaTabela() {
       cidadeCell.innerText = cliente.cidade;
       row.appendChild(cidadeCell);
 
+      // criando a célula para os botões de ação
+      const acaoCell = document.createElement("td");
+
+
+      // adicionando botão "Alterar"
+      const btnAlterar = document.createElement("button");
+      btnAlterar.innerText = "Alterar";
+      btnAlterar.classList.add("btn", "btn-success", "me-2");
+      btnAlterar.addEventListener("click", () => {
+        // adicionar a função para alterar o cliente aqui
+      });
+      acaoCell.appendChild(btnAlterar);
+
+      // adicionando botão "Excluir"
+      const btnExcluir = document.createElement("button");
+      btnExcluir.innerText = "Excluir";
+      btnExcluir.classList.add("btn", "btn-danger");
+      btnExcluir.addEventListener("click", () => {
+        excluirCliente(btnExcluir);
+      });
+      acaoCell.appendChild(btnExcluir);
+
+      row.appendChild(acaoCell);
+
       // adicionando a linha na tabela
       tableBody.appendChild(row);
     });
   }
 }
 
+function excluirCliente(btnExcluir) {
+  const rowIndex = btnExcluir.closest('tr').rowIndex - 1; // obtém o índice da linha da tabela
+  const clientesArray = JSON.parse(localStorage.getItem("clientes")); // obtém o array de clientes salvos no localStorage
+  clientesArray.splice(rowIndex, 1); // remove o cliente correspondente do array
+  localStorage.setItem("clientes", JSON.stringify(clientesArray)); // salva o array atualizado no localStorage
+  renderizaClientesNaTabela(); // atualiza a tabela exibida na página
+}
+
+
 
 
 btnSalvar.addEventListener("click", salvarDados);
-document.getElementById("input-celular").addEventListener('input', function(event) {
+document.getElementById("input-celular").addEventListener('input', function (event) {
   var phoneNumber = event.target.value;
   event.target.value = formatPhoneNumber(phoneNumber);
+});
+
+document.addEventListener("click", (event) => {
+  if (event.target.classList.contains("btn-alterar")) {
+    // Obtem a linha da tabela onde o botão "Alterar" foi clicado
+    const linha = event.target.parentNode.parentNode;
+
+    // Obtem os dados do cliente selecionado na tabela
+    const nome = linha.querySelector("td:nth-child(1)").innerText;
+    const email = linha.querySelector("td:nth-child(2)").innerText;
+    const celular = linha.querySelector("td:nth-child(3)").innerText;
+    const cidade = linha.querySelector("td:nth-child(4)").innerText;
+
+    // Define os valores dos inputs no modal
+    const inputNome = document.getElementById("input-nome");
+    const inputEmail = document.getElementById("input-email");
+    const inputCelular = document.getElementById("input-celular");
+    const inputCidade = document.getElementById("input-cidade");
+
+    inputNome.value = nome;
+    inputEmail.value = email;
+    inputCelular.value = celular;
+    inputCidade.value = cidade;
+
+    // Adiciona um atributo data-cliente-id com o id do cliente para ser usado na hora de salvar as alterações
+    const clienteId = linha.getAttribute("data-cliente-id");
+    const btnSalvar = document.getElementById("btn-salvar");
+    btnSalvar.setAttribute("data-cliente-id", clienteId);
+  }
 });
