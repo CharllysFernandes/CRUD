@@ -4,8 +4,8 @@ let novaTabela = (i, nome, email, telefone) => `
       <td>${email}</td>
       <td>${telefone}</td>
       <td>
-        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"
-          onclick="preencheFormulario(${i})">Alterar</button>
+      <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"
+      onclick="editarCliente(${i})">Alterar</button>    
       </td>
       <td>
         <button type="button" class="btn btn-danger btn-sm" onclick="excluirCliente(${i})">Excluir</button>
@@ -107,4 +107,19 @@ function formatarTelefone(telefone) {
 }
 
 // TO-DO corrija input do telefone.
+
+const telefoneInput = document.getElementById("telefone");
+
+telefoneInput.addEventListener("input", () => {
+  let telefone = telefoneInput.value;
+  if (telefone.length >= 11) {
+    let telefoneFormatado = formatarTelefone(telefone);
+    telefoneInput.value = telefoneFormatado;
+  }
+});
+
+/**
+ * Funcões para alterar
+ * 
+ */
 
