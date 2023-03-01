@@ -18,7 +18,24 @@ btnModalSalvar.addEventListener('click', function () {
   salvarCliente();
 })
 
-const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+const clientes = JSON.parse(localStorage.getItem("clientes")) || [
+  
+    {
+        "nome": "Cliente 1",
+        "email": "cliente1@email.com",
+        "telefone": "(00) 98765-4321"
+    },
+    {
+        "nome": "Cliente 2",
+        "email": "cliente2@email.com",
+        "telefone": "(99) 87654-3210"
+    },
+    {
+        "nome": "Cliente 3",
+        "email": "cliente3@email.com",
+        "telefone": "(88) 76543-2109"
+    }
+];
 atualizarTabela(clientes);
 
 function salvarClientesNoLocalStorage(clientes) {
@@ -46,9 +63,14 @@ function salvarCliente() {
       return;
     }
 
+    if (!validarEmail(email)) {
+      alert('Email inválido. Por favor, verifique o email informado.');
+    }
+
     const clienteExistente = clientes.every(cliente => cliente.nome !== nome);
     const emailExistente = clientes.every(cliente => cliente.email !== email);
     const telefoneExistente = clientes.every(cliente => cliente.telefone !== telefone);
+
 
     if (!clienteExistente) {
       alert("Este cliente já foi adicionado antes.");
@@ -116,6 +138,11 @@ function excluirCliente(i) {
   atualizarTabela(clientes);
 }
 
+function validarEmail(email) {
+  const regex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  return regex.test(email);
+}
+
 function formatarTelefone(telefone) {
   const telefoneNumerico = telefone.replace(/\D/g, "");
   if (telefoneNumerico.length < 10 || telefoneNumerico.length > 11) {
@@ -141,6 +168,11 @@ telefoneInput.addEventListener("input", () => {
     let telefoneFormatado = formatarTelefone(telefone);
     telefoneInput.value = telefoneFormatado;
   }
+  // Impede a entrada de letras
+  if (isNaN(telefone.slice(-1))) {
+    telefoneInput.value = telefone.slice(0, -1)
+  }
+
 });
 
 /**
@@ -164,7 +196,12 @@ function criarModalEditarCliente(indice) {
       // código para salvar o cliente
       const novoNome = nomeInput.value;
       const novoEmail = emailInput.value;
-      const novoTelefone = telefoneInput.value;
+      const novoTelefone = formatarTelefone(telefoneInput.value);
+
+      if (!validarEmail(novoEmail)) {
+        alert('Email inválido. Por favor, verifique o email informado.');
+        return
+      }
 
       // Atualiza os dados do cliente no array de clientes e no localStorage
       clientes[indice].nome = novoNome;
@@ -180,6 +217,22 @@ function criarModalEditarCliente(indice) {
   abrirModalEditarCliente();
 
 }
+const modificarTelefone = document.getElementById("editar-telefone")
+modificarTelefone.addEventListener("input", function () {
+  let telefone = modificarTelefone.value
+  if (telefone.length >= 11) {
+    let telefoneFormatado = formatarTelefone(telefone)
+    modificarTelefone.value = telefoneFormatado
+  }
+  
+  // Impede a entrada de letras
+  if (isNaN(telefone.slice(-1))) {
+    modificarTelefone.value = telefone.slice(0, -1)
+  }
+
+})
+
+
 
 function abrirModalEditarCliente() {
   let modalElement = document.getElementById('modal-editar-cliente');
