@@ -25,31 +25,61 @@ function salvarClientesNoLocalStorage(clientes) {
   localStorage.setItem("clientes", JSON.stringify(clientes));
 }
 
-function salvarCliente() {
-  const nome = document.getElementById("nome").value;
-  const email = document.getElementById("email").value;
-  const telefone = formatarTelefone(document.getElementById("telefone").value);
-
-  // Verifica se os campos estão vazios
+function validarCampos(nome, email, telefone) {
   if (nome === "" || email === "" || telefone === "") {
     alert("Preencha todos os campos antes de salvar o cliente.");
-    return;
+    return false;
   }
-
-  const novoCliente = {
-    nome,
-    email,
-    telefone,
-  };
-
-  clientes.push(novoCliente);
-  salvarClientesNoLocalStorage(clientes)
-  limparFormulario();
-  fecharModal();
-  atualizarTabela(clientes);
-
+  return true;
 }
 
+function salvarCliente() {
+  if (validarCampos(nome, email, telefone)) {
+    // código para salvar o cliente
+    const nome = document.getElementById("nome").value;
+    const email = document.getElementById("email").value;
+    const telefone = formatarTelefone(document.getElementById("telefone").value);
+
+    // Verifica se os campos estão vazios
+    if (nome === "" || email === "" || telefone === "") {
+      alert("Preencha todos os campos antes de salvar o cliente.");
+      return;
+    }
+
+    const clienteExistente = clientes.every(cliente => cliente.nome !== nome);
+    const emailExistente = clientes.every(cliente => cliente.email !== email);
+    const telefoneExistente = clientes.every(cliente => cliente.telefone !== telefone);
+
+    if (!clienteExistente) {
+      alert("Este cliente já foi adicionado antes.");
+      return;
+    }
+
+    if (!emailExistente) {
+      alert("Este email já foi adicionado antes.");
+      return;
+    }
+
+    if (!telefoneExistente) {
+      alert("Este telefone já foi adicionado antes.");
+      return;
+    }
+
+
+    const novoCliente = {
+      nome,
+      email,
+      telefone,
+    };
+
+    clientes.push(novoCliente);
+
+    salvarClientesNoLocalStorage(clientes)
+    limparFormulario();
+    fecharModal();
+    atualizarTabela(clientes);
+  }
+}
 
 function fecharModal() {
   let modalElement = document.getElementById('exampleModal');
@@ -123,30 +153,32 @@ function criarModalEditarCliente(indice) {
   const nomeInput = document.getElementById("editar-nome");
   const emailInput = document.getElementById("editar-email");
   const telefoneInput = document.getElementById("editar-telefone");
-  
-  console.log(clientes[indice].email)
+
   nomeInput.value = clientes[indice].nome;
   emailInput.value = clientes[indice].email;
   telefoneInput.value = clientes[indice].telefone;
 
   const btnSalvarAlteracoes = document.getElementById("btn-modal-editar-salvar");
   btnSalvarAlteracoes.addEventListener("click", () => {
-    const novoNome = nomeInput.value;
-    const novoEmail = emailInput.value;
-    const novoTelefone = telefoneInput.value;
+    if (validarCampos(nomeInput.value, emailInput.value, telefoneInput.value)) {
+      // código para salvar o cliente
+      const novoNome = nomeInput.value;
+      const novoEmail = emailInput.value;
+      const novoTelefone = telefoneInput.value;
 
-    // Atualiza os dados do cliente no array de clientes e no localStorage
-    clientes[indice].nome = novoNome;
-    clientes[indice].email = novoEmail;
-    clientes[indice].telefone = novoTelefone;
-    salvarClientesNoLocalStorage(clientes);
+      // Atualiza os dados do cliente no array de clientes e no localStorage
+      clientes[indice].nome = novoNome;
+      clientes[indice].email = novoEmail;
+      clientes[indice].telefone = novoTelefone;
+      salvarClientesNoLocalStorage(clientes);
 
-    // Fecha o modal e atualiza a tabela de clientes
-    fecharModalEditarCliente();
-    atualizarTabela(clientes);
+      // Fecha o modal e atualiza a tabela de clientes
+      fecharModalEditarCliente();
+      atualizarTabela(clientes);
+    }
   });
   abrirModalEditarCliente();
-  
+
 }
 
 function abrirModalEditarCliente() {
@@ -161,3 +193,4 @@ function fecharModalEditarCliente() {
   let modal = bootstrap.Modal.getInstance(modalElement);
   modal.hide();
 }
+
