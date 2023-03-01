@@ -4,14 +4,14 @@ let novaTabela = (i, nome, email, telefone) => `
       <td>${email}</td>
       <td>${telefone}</td>
       <td>
-      <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"
-      onclick="editarCliente(${i})">Alterar</button>    
+      <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modal-editar-cliente"
+      onclick="criarModalEditarCliente(${i})">Alterar</button>    
       </td>
       <td>
         <button type="button" class="btn btn-danger btn-sm" onclick="excluirCliente(${i})">Excluir</button>
       </td>
 `
-
+const telefoneInput = document.getElementById("telefone");
 const btnModalSalvar = document.getElementById("btnModalSalvar");
 
 btnModalSalvar.addEventListener('click', function () {
@@ -20,6 +20,10 @@ btnModalSalvar.addEventListener('click', function () {
 
 const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
 atualizarTabela(clientes);
+
+function salvarClientesNoLocalStorage(clientes) {
+  localStorage.setItem("clientes", JSON.stringify(clientes));
+}
 
 function salvarCliente() {
   const nome = document.getElementById("nome").value;
@@ -39,19 +43,13 @@ function salvarCliente() {
   };
 
   clientes.push(novoCliente);
-  localStorage.setItem("clientes", JSON.stringify(clientes));
+  salvarClientesNoLocalStorage(clientes)
   limparFormulario();
   fecharModal();
   atualizarTabela(clientes);
 
 }
 
-function verficarCamposVazio() {
-  if (nome === "" || email === "" || telefone === "") {
-    alert("Preencha todos os campos antes de salvar o cliente.");
-    return;
-  }
-}
 
 function fecharModal() {
   let modalElement = document.getElementById('exampleModal');
@@ -83,7 +81,8 @@ function atualizarTabela(clientes) {
 
 function excluirCliente(i) {
   clientes.splice(i, 1);
-  localStorage.setItem("clientes", JSON.stringify(clientes));
+
+  salvarClientesNoLocalStorage(clientes)
   atualizarTabela(clientes);
 }
 
@@ -106,10 +105,6 @@ function formatarTelefone(telefone) {
   return numero;
 }
 
-// TO-DO corrija input do telefone.
-
-const telefoneInput = document.getElementById("telefone");
-
 telefoneInput.addEventListener("input", () => {
   let telefone = telefoneInput.value;
   if (telefone.length >= 11) {
@@ -123,3 +118,46 @@ telefoneInput.addEventListener("input", () => {
  * 
  */
 
+// Função para criar o modal de edição de cliente
+function criarModalEditarCliente(indice) {
+  const nomeInput = document.getElementById("editar-nome");
+  const emailInput = document.getElementById("editar-email");
+  const telefoneInput = document.getElementById("editar-telefone");
+  
+  console.log(clientes[indice].email)
+  nomeInput.value = clientes[indice].nome;
+  emailInput.value = clientes[indice].email;
+  telefoneInput.value = clientes[indice].telefone;
+
+  const btnSalvarAlteracoes = document.getElementById("btn-modal-editar-salvar");
+  btnSalvarAlteracoes.addEventListener("click", () => {
+    const novoNome = nomeInput.value;
+    const novoEmail = emailInput.value;
+    const novoTelefone = telefoneInput.value;
+
+    // Atualiza os dados do cliente no array de clientes e no localStorage
+    clientes[indice].nome = novoNome;
+    clientes[indice].email = novoEmail;
+    clientes[indice].telefone = novoTelefone;
+    salvarClientesNoLocalStorage(clientes);
+
+    // Fecha o modal e atualiza a tabela de clientes
+    fecharModalEditarCliente();
+    atualizarTabela(clientes);
+  });
+  abrirModalEditarCliente();
+  
+}
+
+function abrirModalEditarCliente() {
+  let modalElement = document.getElementById('modal-editar-cliente');
+  let modal = bootstrap.Modal.getInstance(modalElement);
+  modal.show();
+}
+
+// Função para fechar o modal de edição de cliente
+function fecharModalEditarCliente() {
+  let modalElement = document.getElementById('modal-editar-cliente');
+  let modal = bootstrap.Modal.getInstance(modalElement);
+  modal.hide();
+}

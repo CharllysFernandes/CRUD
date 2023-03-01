@@ -80,6 +80,41 @@
                 </div>
             </div>
         </section>
+        <!-- Modal Alterar -->
+        <section>
+            <div class="modal fade" id="modal-editar-cliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Editar cliente</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <form id="modal-editar-form">
+                        <div class="mb-3">
+                          <label for="nome" class="form-label">Nome</label>
+                          <input type="text" class="form-control" id="editar-nome" name="nome">
+                        </div>
+                        <div class="mb-3">
+                          <label for="email" class="form-label">E-mail</label>
+                          <input type="email" class="form-control" id="editar-email" name="email">
+                        </div>
+                        <div class="mb-3">
+                          <label for="telefone" class="form-label">Telefone</label>
+                          <input type="text" class="form-control" id="editar-telefone" name="telefone">
+                        </div>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                      <button type="button" class="btn btn-primary" id="btn-modal-editar-salvar">Salvar alterações</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+        </section>
+
     </main>
 
 </body>
