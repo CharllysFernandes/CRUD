@@ -1,26 +1,30 @@
-# Projeto Clientes
+# CRUD de Clientes
 
-Este projeto é um sistema simples para cadastro, visualização, edição e exclusão de clientes, utilizando HTML, CSS e JavaScript, além do armazenamento de dados no localStorage do navegador.
-
-## Funcionalidades
-
-- Cadastro de clientes com nome, e-mail e telefone
-- Visualização dos clientes cadastrados em uma tabela
-- Edição dos dados de um cliente já cadastrado
-- Exclusão de um cliente da tabela
+Este é um projeto de CRUD (Create, Read, Update, Delete) básico de clientes, desenvolvido utilizando HTML, CSS e JavaScript puro. O objetivo deste projeto é exemplificar como realizar operações básicas de armazenamento de dados utilizando o Local Storage do navegador.
 
 ## Como utilizar
 
-1. Clone este repositório para sua máquina local
-2. Abra o arquivo index.html em seu navegador
-3. Preencha o formulário de cadastro e clique em "Salvar"
-4. O cliente cadastrado aparecerá na tabela abaixo do formulário
-5. Para editar ou excluir um cliente, clique nos botões correspondentes na tabela
+1. Clone o repositório para sua máquina.
+2. Abra o arquivo index.html em seu navegador.
+3. Adicione um novo cliente clicando no botão "Adicionar cliente".
+4. Preencha os campos de nome, e-mail e telefone do cliente e clique em "Salvar".
+5. Para editar um cliente, clique no botão "Alterar" na tabela e preencha os novos dados do cliente no modal de edição.
+6. Para excluir um cliente, clique no botão "Excluir" na tabela.
 
-## Contribuição
+## Funcionalidades
 
-Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou pull request com sugestões de melhorias ou correções de bugs.
+- Adicionar novo cliente.
+- Editar dados de um cliente.
+- Excluir um cliente.
+- Armazenar dados dos clientes no Local Storage do navegador.
+- Excluir dados dos clientes no Local Storage do navegador.
+- Validar dados dos clientes.
+- Formatar telefone dos clientes.
+
+## Contribuições
+
+Contribuições são bem-vindas! Sinta-se à vontade para fazer um fork deste repositório e enviar um pull request com melhorias e correções. Se você encontrar algum bug ou problema, por favor, abra uma issue.
 
 ## Licença
 
-Este projeto está licenciado sob a licença MIT - veja o arquivo LICENSE para mais detalhes.
+Este projeto está licenciado sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
