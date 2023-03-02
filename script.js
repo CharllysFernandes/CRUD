@@ -1,3 +1,4 @@
+const reiniciar = document.getElementById("reiniciar")
 let novaTabela = (i, nome, email, telefone) => `
 <th scope="row">${i + 1}</th>
       <td>${nome}</td>
@@ -247,3 +248,14 @@ function fecharModalEditarCliente() {
   modal.hide();
 }
 
+reiniciar.addEventListener("click", function () {
+  if (confirm("Deseja realmente excluir o localStorage?")) {
+    localStorage.removeItem("clientes");
+    window.location.reload();
+
+  } else {
+    alert("Continue adicionando clientes normalmente")
+  }
+  
+
+})
