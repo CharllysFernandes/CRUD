@@ -7,11 +7,17 @@ let novaTabela = (i, nome, email, telefone) => `
       <td>${email}</td>
       <td>${telefone}</td>
       <td>
-      <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modal-editar-cliente"
-      onclick="criarModalEditarCliente(${i})">Alterar</button>    
+        <button type="button" class="btn btn-warning btn-sm"
+          data-bs-toggle="modal" data-bs-target="#modal-editar-cliente"
+          onclick="criarModalEditarCliente(${i})">
+            Alterar
+        </button>    
       </td>
       <td>
-        <button type="button" class="btn btn-danger btn-sm" onclick="excluirCliente(${i})">Excluir</button>
+        <button type="button" class="btn btn-danger btn-sm"
+          onclick="excluirCliente(${i})">
+          Excluir
+        </button>
       </td>
 `
 const telefoneInput = document.getElementById("telefone");
@@ -54,59 +60,49 @@ function validarCampos(nome, email, telefone) {
 }
 
 function salvarCliente() {
-  if (validarCampos(nome, email, telefone)) {
-    // código para salvar o cliente
-    const nome = document.getElementById("nome").value;
-    const email = document.getElementById("email").value;
-    const telefone = formatarTelefone(document.getElementById("telefone").value);
+  // Obter os valores dos campos do formulário
+  const nome = document.getElementById("nome").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const telefone = formatarTelefone(document.getElementById("telefone").value.trim());
 
-    // Verifica se os campos estão vazios
-    if (nome === "" || email === "" || telefone === "") {
-      alert("Preencha todos os campos antes de salvar o cliente.");
-      return;
-    }
-
-    if (!validarEmail(email)) {
-      alert('Email inválido. Por favor, verifique o email informado.');
-    }
-
-    const clienteExistente = clientes.every(cliente => cliente.nome !== nome);
-    const emailExistente = clientes.every(cliente => cliente.email !== email);
-    const telefoneExistente = clientes.every(cliente => cliente.telefone !== telefone);
-
-
-    if (!clienteExistente) {
-      alert("Este cliente já foi adicionado antes.");
-      return;
-    }
-
-    if (!emailExistente) {
-      alert("Este email já foi adicionado antes.");
-      return;
-    }
-
-    if (!telefoneExistente) {
-      alert("Este telefone já foi adicionado antes.");
-      return;
-    }
-
-
-    const novoCliente = {
-      nome,
-      email,
-      telefone,
-    };
-
-    clientes.push(novoCliente);
-
-
-    salvarClientesNoLocalStorage(clientes)
-    limparFormulario();
-    fecharModal();
-    atualizarTabela(clientes);
-
+  // Validar os campos
+  if (!nome || !email || !telefone) {
+    alert("Preencha todos os campos antes de salvar o cliente.");
+    return;
   }
+
+  if (!validarEmail(email)) {
+    alert('Email inválido. Por favor, verifique o email informado.');
+    return;
+  }
+
+  // Verificar se já existe um cliente com os mesmos dados
+  const duplicataEncontrada = verificarDuplicata(clientes, {nome, email, telefone});
+  if (duplicataEncontrada) {
+    alert("Este cliente já foi adicionado antes.");
+    return;
+  }
+
+  // Adicionar o novo cliente ao array de clientes
+  const novoCliente = {nome, email, telefone};
+  clientes.push(novoCliente);
+
+  // Salvar o array atualizado no localStorage, limpar o formulário, fechar o modal e atualizar a tabela
+  salvarClientesNoLocalStorage(clientes);
+  limparFormulario();
+  fecharModal();
+  atualizarTabela(clientes);
 }
+
+// Função auxiliar para verificar se um novo cliente é uma duplicata de um cliente existente
+function verificarDuplicata(clientes, novoCliente) {
+  return clientes.some(cliente =>
+    (cliente.nome === novoCliente.nome) ||
+    (cliente.email === novoCliente.email) ||
+    (cliente.telefone === novoCliente.telefone)
+  );
+}
+
 
 function fecharModal() {
   let modalElement = document.getElementById('exampleModal');
@@ -120,22 +116,22 @@ function limparFormulario() {
   form.reset();
 }
 
+// Atualiza a tabela de clientes na página.
 function atualizarTabela(clientes) {
+  // Obtém a tabela do DOM.
   const tbody = document.getElementById('tbody');
+  // Remove todos os elementos filhos da tabela.
   tbody.innerHTML = '';
 
-  for (let i = 0; i < clientes.length; i++) {
-    const cliente = clientes[i];
-
+  // Itera sobre cada cliente e cria uma nova linha na tabela.
+  clientes.forEach((cliente, i) => {
+    const { nome, email, telefone } = cliente;
     const tr = document.createElement('tr');
-    let nome = cliente.nome
-    let email = cliente.email
-    let telefone = cliente.telefone
     tr.innerHTML = novaTabela(i, nome, email, telefone);
-
     tbody.appendChild(tr);
-  }
+  });
 }
+
 
 function excluirCliente(i) {
   clientes.splice(i, 1);
@@ -187,6 +183,7 @@ telefoneInput.addEventListener("input", () => {
  */
 
 // Função para criar o modal de edição de cliente
+
 function criarModalEditarCliente(indice) {
   const nomeInput = document.getElementById("editar-nome");
   const emailInput = document.getElementById("editar-email");
@@ -251,15 +248,21 @@ function fecharModalEditarCliente() {
   let modal = bootstrap.Modal.getInstance(modalElement);
   modal.hide();
 }
-
-reiniciar.addEventListener("click", function () {
+// Define a ação a ser tomada quando o botão "Reiniciar" for clicado.
+reiniciar.addEventListener("click", () => {
+  // Verifica se o usuário realmente deseja excluir o localStorage.
   if (confirm("Deseja realmente excluir o localStorage?")) {
+    // Remove o item "clientes" do localStorage.
     localStorage.removeItem("clientes");
+    // Recarrega a página para refletir a alteração.
     window.location.reload();
-
   } else {
-    alert("Continue adicionando clientes normalmente")
+    // Se o usuário não quiser excluir o localStorage, exibe uma mensagem informativa.
+    exibirMensagemClientesNormalmente();
   }
-  
+});
 
-})
+// Define uma função auxiliar para exibir uma mensagem informando que os clientes ainda estão armazenados.
+function exibirMensagemClientesNormalmente() {
+  alert("Continue adicionando clientes normalmente");
+}
