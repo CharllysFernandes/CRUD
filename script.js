@@ -99,10 +99,12 @@ function salvarCliente() {
 
     clientes.push(novoCliente);
 
+
     salvarClientesNoLocalStorage(clientes)
     limparFormulario();
     fecharModal();
     atualizarTabela(clientes);
+
   }
 }
 
@@ -110,6 +112,7 @@ function fecharModal() {
   let modalElement = document.getElementById('exampleModal');
   let modal = bootstrap.Modal.getInstance(modalElement);
   modal.hide();
+  alert("Cliente Salvo com Sucesso!")
 }
 
 function limparFormulario() {
