@@ -1,3 +1,5 @@
+
+
 const reiniciar = document.getElementById("reiniciar")
 let novaTabela = (i, nome, email, telefone) => `
 <th scope="row">${i + 1}</th>
@@ -215,6 +217,7 @@ function criarModalEditarCliente(indice) {
       atualizarTabela(clientes);
     }
   });
+  
   abrirModalEditarCliente();
 
 }
@@ -232,8 +235,6 @@ modificarTelefone.addEventListener("input", function () {
   }
 
 })
-
-
 
 function abrirModalEditarCliente() {
   let modalElement = document.getElementById('modal-editar-cliente');
